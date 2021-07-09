@@ -1,0 +1,8 @@
+/.vs/
+/bin/
+obj
+obj.meta
+
+*.suo
+*.user
+.project
