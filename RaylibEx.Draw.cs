@@ -65,8 +65,7 @@ namespace Raylib_cs
 		public static void DrawTexture(this Texture2D texture, vec2 position, vec2 scale)
 			=> DrawTexture(texture, position, scale, colorb.WHITE);
 		public static void DrawTexture(this Texture2D texture, vec2 position, vec2 scale, colorb tint)
-			=> Raylib.DrawTexturePro(texture, texture.GetRectangle(), rect2.wh(texture.size * scale), position, 0, tint);
-
+			=> DrawTexture(texture, rect2.xywh(position, texture.size * scale), tint);
 		public static void DrawTexture(this Texture2D texture, rect2 destRec)
 			=> DrawTexture(texture, destRec, colorb.WHITE);
 		public static void DrawTexture(this Texture2D texture, rect2 destRec, colorb tint)
@@ -84,14 +83,9 @@ namespace Raylib_cs
 			=> DrawLine((startPosX, startPosY), (endPosX, endPosY), color);
 
 		public static void DrawLine(vec2 start, vec2 end, colorb color)
-		{
-			Raylib.DrawLineV(start, end, color);
-		}
-
+			=> Raylib.DrawLineV(start, end, color);
 		public static void DrawLine(vec2 start, vec2 end, float thick, colorb color)
-		{
-			Raylib.DrawLineEx(start, end, thick, color);
-		}
+			=> Raylib.DrawLineEx(start, end, thick, color);
 
 		public static void DrawRectangle(rect2 rect, colorb color)
 			=> Raylib.DrawRectangleRec(rect.normalized, color);

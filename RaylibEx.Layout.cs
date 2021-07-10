@@ -1,6 +1,5 @@
 ﻿using Layout.Engine;
 using MathEx;
-using Raylib_cs;
 using System;
 using SystemEx;
 
@@ -73,10 +72,17 @@ namespace Raylib_cs
 					box.Content = RaylibEx.MeasureText(font, text());
 				});
 
-		public static Texture2DBoxLayout MakeBoxLayout(this Texture2D texture, Func<colorb> color = null, Func<BlendMode> blendMode = null)
-			=> new Texture2DBoxLayout(() => texture, color, blendMode)
+		public static BoxLayout MakeBoxLayout(this Texture2D texture, vec2? scale = null, colorb? color = null, BlendMode blendMode = BlendMode.BLEND_ALPHA)
+			=> new BoxLayout((vec2)texture.size * (scale ?? vec2.one))
 				.Also(box => {
-					box.Content = (vec2)texture.size;
+					box.OnDraw = rect => {
+						using (BeginBlendMode(blendMode))
+						{
+							rect.a += box.Padding.lt();
+							rect.b -= box.Padding.rb();
+							texture.DrawTexture(rect, color ?? colorb.WHITE);
+						}
+					};
 				});
 
 		public static Texture2DBoxLayout MakeBoxLayout(this Texture2D texture, NPatchInfo npathInfo, Func<colorb> color = null, Func<BlendMode> blendMode = null)
