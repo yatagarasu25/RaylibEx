@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Layout.Engine\Layout.Engine.csproj" />
+    <ProjectReference Include="..\Layout.Engine\Layout.Engine.csproj" />
     <ProjectReference Include="..\MathEx\MathEx.core.csproj" />
     <ProjectReference Include="..\Raylib-cs\Raylib-cs\Raylib-cs.core.csproj" />
     <ProjectReference Include="..\SystemEx\SystemEx.core.csproj" />
