@@ -122,5 +122,8 @@ namespace Raylib_cs
 
 			public IDisposable Subscribe(IObserver<MouseState> observer) => s_.Subscribe(observer);
 		}
+
+		public static Subject<MouseState> mouseState = new Subject<MouseState>();
+		public static InputStream selectInput = new InputStream(ms => ms.buttonLeft.IsUp() && ms.buttonLeft.ThisFrame());
 	}
 }
