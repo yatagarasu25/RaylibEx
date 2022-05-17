@@ -1,10 +1,12 @@
-﻿using Layout.Engine;
-using MathEx;
+﻿using MathEx;
 using System;
 using SystemEx;
 
 namespace Raylib_cs
 {
+#if false
+	using Layout.Engine;
+
 	public class FontBoxLayout
 		: BoxLayout
 	{
@@ -91,4 +93,5 @@ namespace Raylib_cs
 					box.Content = vec2.xy(npathInfo.left + npathInfo.right, npathInfo.top + npathInfo.bottom);
 				});
 	}
+#endif
 }
