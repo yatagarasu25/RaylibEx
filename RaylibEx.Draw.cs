@@ -5,20 +5,20 @@ public static partial class RaylibEx
 	public static IDisposable BeginDrawing()
 	{
 		Raylib.BeginDrawing();
-		return DisposableLock.Lock(() => Raylib.EndDrawing());
+		return DisposableLock.Lock(Raylib.EndDrawing);
 	}
 
 	public static IDisposable BeginDrawing(Color color)
 	{
 		Raylib.BeginDrawing();
 		Raylib.ClearBackground(color);
-		return DisposableLock.Lock(() => Raylib.EndDrawing());
+		return DisposableLock.Lock(Raylib.EndDrawing);
 	}
 
 	public static IDisposable BeginBlendMode(BlendMode mode)
 	{
 		Raylib.BeginBlendMode(mode);
-		return DisposableLock.Lock(() => Raylib.EndBlendMode());
+		return DisposableLock.Lock(Raylib.EndBlendMode);
 	}
 
 
