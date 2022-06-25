@@ -1,77 +1,73 @@
-﻿using MathEx;
-using System;
+﻿namespace Raylib_cs;
 
-namespace Raylib_cs
+public static partial class RaylibEx
 {
-	public static partial class RaylibEx
+	public static Image GenImageColors(Vector2i size, Color[] colors)
+		=> GenImageColors(size.x, size.y, colors);
+
+	public static Image GenImageColors(int width, int height, Color[] colors)
 	{
-		public static Image GenImageColors(vec2i size, colorb[] colors)
-			=> GenImageColors(size.x, size.y, colors);
+		var image = Raylib.GenImageColor(width, height, Color.BLANK);
 
-		public static Image GenImageColors(int width, int height, colorb[] colors)
+		image.SaveImageColors(colors);
+
+		return image;
+	}
+
+	public static Color[] LoadImageColors(this Image image)
+	{
+		using (var imageColorsPtr = image.LockImageColors())
 		{
-			var image = Raylib.GenImageColor(width, height, colorb.BLANK);
-
-			image.SaveImageColors(colors);
-
-			return image;
-		}
-
-		public static colorb[] LoadImageColors(this Image image)
-		{
-			using (var imageColorsPtr = image.LockImageColors())
-			{
-				var colorCount = image.size.product;
-				var result = new colorb[colorCount];
-				unsafe
-				{
-					fixed (void* resultPtr = result)
-					{
-						Buffer.MemoryCopy((byte*)imageColorsPtr._, resultPtr, colorCount * 4, colorCount * 4);
-					}
-				}
-				return result;
-			}
-		}
-
-		public static void SaveImageColors(this Image image, colorb[] colors)
-		{
+			var colorCount = image.size.product;
+			var result = new Color[colorCount];
 			unsafe
 			{
-				var byteCount = image.size.product * 4;
-				fixed (void* colorsPtr = colors)
+				fixed (void* resultPtr = result)
 				{
-					Buffer.MemoryCopy(colorsPtr, (void*)image.data, byteCount, byteCount);
+					Buffer.MemoryCopy((byte*)imageColorsPtr._, resultPtr, colorCount * 4, colorCount * 4);
 				}
 			}
+			return result;
 		}
+	}
 
-		public static Image Resize(this Image image, int newWidth, int newHeight)
+	public static void SaveImageColors(this Image image, Color[] colors)
+	{
+		unsafe
 		{
-			Raylib.ImageResize(ref image, newWidth, newHeight);
-			return image;
+			var byteCount = image.size.product * 4;
+			fixed (void* colorsPtr = colors)
+			{
+				Buffer.MemoryCopy(colorsPtr, (void*)image.data, byteCount, byteCount);
+			}
 		}
+	}
 
-		public static Image ResizeCanvas(this Image image, int newWidth, int newHeight, int offsetX, int offsetY, colorb color)
-		{
-			Raylib.ImageResizeCanvas(ref image, newWidth, newHeight, offsetX, offsetY, color);
-			return image;
-		}
+	public static Image Resize(this Image image, int newWidth, int newHeight)
+	{
+		Raylib.ImageResize(ref image, newWidth, newHeight);
+		return image;
+	}
 
-		public static Image ScaleCrop(this Image image, int newWidth, int newHeight, float newPixelAspect = 1)
-		{
-			var ia = image.size.aspect;
-			var ca = (float)newWidth / newHeight;
+	public static Image ResizeCanvas(this Image image, int newWidth, int newHeight, int offsetX, int offsetY, Color color)
+	{
+		Raylib.ImageResizeCanvas(ref image, newWidth, newHeight, offsetX, offsetY, color);
+		return image;
+	}
 
-			float scale = (ia < ca)
-				? (float)newWidth / image.size.x
-				: (float)newHeight / image.size.y;
+	public static Image ScaleCrop(this Image image, int newWidth, int newHeight, float newPixelAspect = 1)
+	{
+		var ia = image.size.aspect;
+		var ca = (float)newWidth / newHeight;
 
-			var (w, h) = ((image.size.x * scale * newPixelAspect).Round(), (image.size.y * scale).Round());
-			Raylib.ImageResize(ref image, w, h);
-			Raylib.ImageResizeCanvas(ref image, newWidth, newHeight, (newWidth - w) / 2, (newHeight - h) / 2, colorb.TRANSPARENT);
+		float scale = (ia < ca)
+			? (float)newWidth / image.size.x
+			: (float)newHeight / image.size.y;
 
-			return image;
-		}
+		var (w, h) = ((image.size.x * scale * newPixelAspect).Round(), (image.size.y * scale).Round());
+		Raylib.ImageResize(ref image, w, h);
+		Raylib.ImageResizeCanvas(ref image, newWidth, newHeight, (newWidth - w) / 2, (newHeight - h) / 2, Color.TRANSPARENT);
+
+		return image;
 	}
 }
