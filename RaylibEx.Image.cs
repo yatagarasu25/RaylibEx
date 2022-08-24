@@ -1,7 +1,16 @@
-﻿namespace Raylib_cs;
+﻿using static System.Net.Mime.MediaTypeNames;
+
+namespace Raylib_cs;
 
 public static partial class RaylibEx
 {
+	public static IDisposable<Image> GenImageColor(int width, int height, Color color)
+		=> Raylib.GenImageColor(width, height, color)
+			.Let(image => DisposableLock.Lock(image, i => Raylib.UnloadImage(i)));
+
+	public static IDisposable<Image> GenImageColor(vec2i size, Color color)
+		=> GenImageColor(size.x, size.y, color);
+
 	public static Image GenImageColors(Vector2i size, Color[] colors)
 		=> GenImageColors(size.x, size.y, colors);
 
@@ -13,6 +22,23 @@ public static partial class RaylibEx
 
 		return image;
 	}
+
+	public static unsafe void UsingImageColors(vec2i size, Color[] colors, Action<Image> fn)
+	{
+		fixed (colorb* data = &colors[0])
+		{
+			var image = new Image() {
+				data = data,
+				format = PixelFormat.UNCOMPRESSED_R8G8B8A8,
+				mipmaps = 0,
+				size = size
+			};
+
+			fn(image);
+		}
+	}
+
+
 
 	public static Color[] LoadImageColors(this Image image)
 	{
