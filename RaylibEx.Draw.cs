@@ -1,4 +1,6 @@
-﻿namespace Raylib_cs;
+﻿using static System.Net.Mime.MediaTypeNames;
+
+namespace Raylib_cs;
 
 public static partial class RaylibEx
 {
@@ -52,6 +54,7 @@ public static partial class RaylibEx
 		Raylib.DrawTextureTiled(texture, source, Rectangle.xywh(xy, wh), Vector2.zero, 0, transformStack.currentTransform.scale.x, tint);
 	}
 
+	public static void DrawTexture(this IDisposable<Texture2D> texture) => DrawTexture(texture._);
 	public static void DrawTexture(this Texture2D texture)
 		=> DrawTexture(texture, Color.WHITE);
 	public static void DrawTexture(this Texture2D texture, Color tint)

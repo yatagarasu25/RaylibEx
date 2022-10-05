@@ -1,26 +1,25 @@
-﻿using static System.Net.Mime.MediaTypeNames;
-
-namespace Raylib_cs;
+﻿namespace Raylib_cs;
 
 public static partial class RaylibEx
 {
+	public static IDisposable<Image> EmptyImage()
+		=> new Image().Lock();
 	public static IDisposable<Image> GenImageColor(int width, int height, Color color)
-		=> Raylib.GenImageColor(width, height, color)
-			.Let(image => DisposableLock.Lock(image, i => Raylib.UnloadImage(i)));
+		=> Raylib.GenImageColor(width, height, color).Lock();
 
 	public static IDisposable<Image> GenImageColor(vec2i size, Color color)
 		=> GenImageColor(size.x, size.y, color);
 
-	public static Image GenImageColors(Vector2i size, Color[] colors)
+	public static IDisposable<Image> GenImageColors(Vector2i size, Color[] colors)
 		=> GenImageColors(size.x, size.y, colors);
 
-	public static Image GenImageColors(int width, int height, Color[] colors)
+	public static IDisposable<Image> GenImageColors(int width, int height, Color[] colors)
 	{
 		var image = Raylib.GenImageColor(width, height, Color.BLANK);
 
 		image.SaveImageColors(colors);
 
-		return image;
+		return image.Lock();
 	}
 
 	public static unsafe void UsingImageColors(vec2i size, Color[] colors, Action<Image> fn)
@@ -96,4 +95,21 @@ public static partial class RaylibEx
 
 		return image;
 	}
+
+	public static void ImageDraw(this Image src, ref Image dst, rect2 xywh, colorb tint)
+		=> Raylib.ImageDraw(ref dst, src, rect2.wh(src.size), xywh, tint);
+	public static void ImageDraw(this Image src, ref Image dst, vec2i xy, colorb tint)
+		=> src.ImageDraw(ref dst, rect2.xywh(xy, src.size), tint);
+	public static void ImageDraw(this Image src, IDisposable<Image> dst, rect2 xywh, colorb tint)
+	{
+		var dsti = dst._;
+		src.ImageDraw(ref dsti, xywh, tint);
+		dst.Reset = dsti;
+	}
+	public static void ImageDraw(this Image src, IDisposable<Image> dst, vec2i xy, colorb tint)
+		=> src.ImageDraw(dst, rect2.xywh(xy, src.size), tint);
+	public static void ImageDraw(this IDisposable<Image> src, IDisposable<Image> dst, rect2 xywh)
+		=> src._.ImageDraw(dst, xywh, colorb.WHITE);
+	public static void ImageDraw(this IDisposable<Image> src, IDisposable<Image> dst, vec2i xy)
+		=> src._.ImageDraw(dst, xy, colorb.WHITE);
 }
