@@ -96,6 +96,9 @@ public static partial class RaylibEx
 		return image;
 	}
 
+	public static void ImageDrawRectangle(this Image dst, rect2 xywh, colorb color)
+		=> Raylib.ImageDrawRectangle(dst, (int)xywh.xy.x, (int)xywh.xy.y, (int)xywh.size.x, (int)xywh.size.y, color);
+
 	public static void ImageDraw(this Image src, ref Image dst, rect2 xywh, colorb tint)
 		=> Raylib.ImageDraw(ref dst, src, rect2.wh(src.size), xywh, tint);
 	public static void ImageDraw(this Image src, ref Image dst, vec2i xy, colorb tint)
